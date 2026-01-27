@@ -30,6 +30,8 @@ def get_flashfood_config() -> tuple[str, dict]:
 
     return api_url, headers
 
+TELEGRAM_API_URL = "https://api.telegram.org/bot{token}/sendMessage"
+
 # Full file paths
 SCRIPT_DIR = Path(__file__).parent
 CONFIG_FILE = SCRIPT_DIR / "config.json"
@@ -215,8 +217,23 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
     #making this a set removes duplicates.
     return list(set(new_item_ids))
 
-def send_telegram_message(token:str, chat_id:str,message:str)->bool:
-    return True
+
+def send_telegram_message(token: str, chat_id: str, message: str) -> bool:
+    url = TELEGRAM_API_URL.format(token=token)
+    payload = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": False
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=30)
+        response.raise_for_status()
+        return True
+    except requests.RequestException as e:
+        print(f"Error sending Telegram message: {e}")
+        return False
 
 def format_create_notification(item: dict, store: dict, match_reasons: list[str]) -> str:
     name = item.get("name", "Unknown Item")
