@@ -219,12 +219,17 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
 
 def get_item_removal_date(item:dict) -> datetime:
     # defaults to a week from now
-    expiry_date = datetime.now() - timedelta(days=7)
+    expiry_date = datetime.now() - timedelta(days=30)
     best_before_on_item = item.get("bestBeforeDate")
     if best_before_on_item:
         expiry_date = datetime.fromtimestamp(best_before_on_item)
     return expiry_date
 
+def save_seen_items(seen_items: dict):
+    # Overwrites seen items file with updated dict
+    seen_items["last_updated"] = datetime.now().isoformat()
+    with open(SEEN_ITEMS_FILE, "w") as seen_items_file:
+        json.dump(seen_items, seen_items_file, indent=2)
 
 def send_telegram_message(token: str, chat_id: str, message: str) -> bool:
     url = TELEGRAM_API_URL.format(token=token)
@@ -360,6 +365,7 @@ def main():
     # Update seen_items with the filtered recent items
     seen_items["items"] = recently_seen_items
     #must rewrite seen items now to update
+    save_seen_items(seen_items)
 
 
 
