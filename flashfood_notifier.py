@@ -194,17 +194,10 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
 
                 # Check discount percentage
                  
-                original_price = item.get("originalPrice", "0"),
-                final_price = item.get("price", "0")
-                discount=0
-                try:
-                    original = float(original_price)
-                    current = float(final_price)
-                    if original <= 0:
-                        discount= 0
-                    discount ((original - current) / original) * 100
-                except (ValueError, TypeError):
-                    discount=0
+                discount = calculate_discount_percent(
+                    item.get("originalPrice", "0"),
+                    item.get("price", "0")
+                )
                 
                 if discount_above and discount >= discount_above:
                     reasons.append(f"Over {discount_above}% off")
@@ -216,6 +209,16 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
 
     
     return new_item_ids
+
+def calculate_discount_percent(original_price: str, final_price: str) -> float:
+    try:
+        original = float(original_price)
+        current = float(final_price)
+        if original <= 0:
+            return 0
+        return ((original - current) / original) * 100
+    except (ValueError, TypeError):
+        return 0
 
 def main():
     # Get telegram token from environment
