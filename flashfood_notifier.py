@@ -206,9 +206,52 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
                     continue
 
                 new_item_ids.append(item_id)
+                #now I need to check for duplicates and add reasons together
+                #then send notification which I will do first
+                for item, store, reasons in notifications:
+                    message = format_notification(item, store, reasons)
 
+    return list(set(new_item_ids))
+
+def format_notification(item: dict, store: dict, match_reasons: list[str]) -> str:
+    name = item.get("name", "Unknown Item")
+    price = item.get("price", "?")
+    original_price = item.get("originalPrice", price)
+    quantity = item.get("quantityAvailable", "?")
+
+    #maybe find address if unknown
+    store_name = store.get("name", "Unknown Store")
+
+    # Calculate discount
+    discount_percentage = calculate_discount_percent(original_price, price)
+
+    # Format expiry date - wanna make it day of the week based
+    # but if it's like a year in the future that doesn't work
+    best_before = item.get("bestBeforeDate")
+    if best_before:
+        #strftime("Today is %A, %B %d, %y")
+        #Today is Wednesday, April 09, 25
+        # it isn't recognizing %y, will test.
+        expiry = datetime.fromtimestamp(best_before).strftime("%a, %b %d, '%y")
+    else:
+        expiry = "N/A"
+
+    # making message, can use a little styling
+    price_string = "Price: <b>${price}</b>" 
+    + (f" (was ${original_price}, {discount_percentage:.0f}% off)" 
+    if discount_percentage > 0 else ""),
+
+    lines = [
+        f"<b>{name}</b>",
+        f"",
+        f"Price: {price_string}",
+        f"Qty: {quantity}",
+        f"Expires: {expiry}",
+        f"Store: {store_name}",
+    ]
+
+    return "\n".join(lines)
     
-    return new_item_ids
 
 def calculate_discount_percent(original_price: str, final_price: str) -> float:
     try:
