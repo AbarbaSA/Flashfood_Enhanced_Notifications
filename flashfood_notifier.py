@@ -2,6 +2,8 @@
 import json
 import os
 from pathlib import Path
+import requests
+
 
 # Keeping these as secrets in case they're sensitive
 def get_flashfood_config() -> tuple[str, dict]:
@@ -45,7 +47,33 @@ def load_seen_items() -> dict:
         return {"items": {}, "last_updated": None}
     with open(SEEN_ITEMS_FILE, "r") as f:
         return json.load(f)
+
+def get_stores_by_location(api_url: str, headers: dict, latitude: float, longitude: float, max_distance: int = 75000) -> list[dict]:
+# gets all stores near specified location and all their items
     
+    search_criteria = {
+        "storesWithItemsLimit": 30,
+        "includeItems": "true",
+        "searchLatitude": latitude,
+        "searchLongitude": longitude,
+        "userLocationLatitude": latitude,
+        "userLocationLongitude": longitude,
+        "maxDistance": max_distance
+    }
+
+    try:
+        response = requests.get(api_url, headers=headers, params=search_criteria, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+
+        if data.get("status") == "success":
+            return data.get("data", [])
+    except requests.RequestException as e:
+        print(f"Getting stores by location failed: {e}")
+
+    return []
+
+
 
 def main():
     # Get telegram token from environment
@@ -61,6 +89,8 @@ def main():
 
     # Load seen items
     seen_items = load_seen_items()
+
+    all_nearby_stores = get_stores_by_location(api_url, headers, 45, -73)
 
 
 if __name__ == "__main__":
