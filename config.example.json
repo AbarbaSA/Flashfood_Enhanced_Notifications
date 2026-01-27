@@ -1,0 +1,50 @@
+{
+  "users": [
+    {
+      "name": "Sarah",
+      "telegram_chat_id": "my chat ID",
+      "location": {
+        "latitude": 45.5644,
+        "longitude": -73.5946
+      },
+      "favorite_stores": {
+        "enabled": true,
+        "store_ids": [
+          "List of store ids"
+        ],
+        "expiry_filter": null
+      },
+      "deal_alerts": {
+        "enabled": true,
+        "store_ids": [
+          "List of store ids"
+        ],
+        "price_below": 5.00,
+        "discount_above_percent": 50
+      }
+    },
+    {
+      "name": "J",
+      "telegram_chat_id": "J's chat ID",
+      "location": {
+        "latitude": 43.6532,
+        "longitude": -79.3832
+      },
+      "favorite_stores": {
+        "enabled": true,
+        "store_ids": [
+          "List of store ids"
+        ],
+        "expiry_filter": {
+          "day_of_week": "saturday"
+        }
+      },
+      "deal_alerts": {
+        "enabled": false,
+        "store_ids": [],
+        "price_below": null,
+        "discount_above_percent": null
+      }
+    }
+  ]
+}
