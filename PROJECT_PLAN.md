@@ -41,3 +41,8 @@ Add configurable features that compliment flashfood app.
 - Is it one polling script per user or one polling script set up for multiple? 
 - my github is public so if I use their GH Actions feature I need to figure out how to keep secrets for the sensitive strings - last project got squashed into a giant commit because I had secrets hardcoded in multiple spots during the version history and I didn't want to fix them all.
 - Find out how often I can poll if there's a limit on free polling
+
+### Flashfood API
+- Is seemingly not readily available. Rats. 
+- Tried using HTTP toolkit to see network traffic from my phone but it looks like that traffic is blocked. Tried with CA certificate as well but looks like it doesn't recognize it.
+- found this github which is 5 years old but references changing the certificate an APK and reinstalling :https://github.com/patcon/flashfood-api-docs. He's authenticating and I don't want to, and it's old so may not work.
