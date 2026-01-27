@@ -29,6 +29,7 @@ def get_flashfood_config() -> tuple[str, dict]:
 # Full file paths
 SCRIPT_DIR = Path(__file__).parent
 CONFIG_FILE = SCRIPT_DIR / "config.json"
+SEEN_ITEMS_FILE = SCRIPT_DIR / "seen_items.json"
 
 def load_config() -> dict:
     #loads local config
@@ -36,3 +37,32 @@ def load_config() -> dict:
         raise FileNotFoundError(f"Config file not found: {CONFIG_FILE}")
     with open(CONFIG_FILE, "r") as f:
         return json.load(f)
+    
+def load_seen_items() -> dict:
+    #don't want to alert on items already sent. Probably don't
+    #want to keep adding stuff to this list forever and ever
+    if not SEEN_ITEMS_FILE.exists():
+        return {"items": {}, "last_updated": None}
+    with open(SEEN_ITEMS_FILE, "r") as f:
+        return json.load(f)
+    
+
+def main():
+    # Get telegram token from environment
+    telegram_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not telegram_token:
+        raise ValueError("TELEGRAM_BOT_TOKEN environment variable not set")
+
+    # Get Flashfood API config from environment
+    api_url, headers = get_flashfood_config()
+
+    # Load config
+    config = load_config()
+
+    # Load seen items
+    seen_items = load_seen_items()
+
+
+if __name__ == "__main__":
+    main()
+    
