@@ -46,3 +46,4 @@ Add configurable features that compliment flashfood app.
 - Is seemingly not readily available. Rats. 
 - Tried using HTTP toolkit to see network traffic from my phone but it looks like that traffic is blocked. Tried with CA certificate as well but looks like it doesn't recognize it.
 - found this github which is 5 years old but references changing the certificate an APK and reinstalling :https://github.com/patcon/flashfood-api-docs. He's authenticating and I don't want to, and it's old so may not work.
+- It does not work, it says it needs an API key. Will do my best to find that now.
