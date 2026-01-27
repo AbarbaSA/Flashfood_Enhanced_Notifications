@@ -166,6 +166,8 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
     if deal_config.get("enabled"):
         less_convenient_store_ids = deal_config.get("store_ids", [])
         price_below = deal_config.get("price_below")
+        discount_above = deal_config.get("discount_above_percent")
+
 
         for store_id in less_convenient_store_ids:
             store = all_stores_in_area.get(store_id)
@@ -174,7 +176,7 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
 
             for item in store.get("items", []):
                 item_id = item.get("id")
-                if not item_id:
+                if not item_id or item_id in seen_items.get("items", {}):
                     continue
 
                 #reason we're making this a notification in case multiple
@@ -190,8 +192,23 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
                 except (ValueError, TypeError):
                     pass
 
-                # add % check
+                # Check discount percentage
+                 
+                original_price = item.get("originalPrice", "0"),
+                final_price = item.get("price", "0")
+                discount=0
+                try:
+                    original = float(original_price)
+                    current = float(final_price)
+                    if original <= 0:
+                        discount= 0
+                    discount ((original - current) / original) * 100
+                except (ValueError, TypeError):
+                    discount=0
                 
+                if discount_above and discount >= discount_above:
+                    reasons.append(f"Over {discount_above}% off")
+
                 if not reasons:
                     continue
 
