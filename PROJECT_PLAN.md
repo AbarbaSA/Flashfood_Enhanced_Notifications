@@ -34,3 +34,10 @@ Add configurable features that compliment flashfood app.
   - Favorite stores list
   - Deal alert stores list (pre-configured)
   - Notification preferences (feature toggle)
+
+### Polling thoughts, needs and concerns
+- I need to poll the API fairly often or else it's not better than the built in broken feature they have that's a half hour+ off
+- I don't need to poll all the time, just typical store open hours in my timezone (Timezone configurable? My friend's province is an hour difference)
+- Is it one polling script per user or one polling script set up for multiple? 
+- my github is public so if I use their GH Actions feature I need to figure out how to keep secrets for the sensitive strings - last project got squashed into a giant commit because I had secrets hardcoded in multiple spots during the version history and I didn't want to fix them all.
+- Find out how often I can poll if there's a limit on free polling
