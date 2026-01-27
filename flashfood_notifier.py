@@ -1,6 +1,7 @@
 #polls flashfood and sends telegram bot notifications according to criteria.
 import json
 import os
+from pathlib import Path
 
 # Keeping these as secrets in case they're sensitive
 def get_flashfood_config() -> tuple[str, dict]:
@@ -25,6 +26,13 @@ def get_flashfood_config() -> tuple[str, dict]:
 
     return api_url, headers
 
+# Full file paths
+SCRIPT_DIR = Path(__file__).parent
+CONFIG_FILE = SCRIPT_DIR / "config.json"
+
 def load_config() -> dict:
-    with open("config.example.json", "r") as f:
+    #loads local config
+    if not CONFIG_FILE.exists():
+        raise FileNotFoundError(f"Config file not found: {CONFIG_FILE}")
+    with open(CONFIG_FILE, "r") as f:
         return json.load(f)
