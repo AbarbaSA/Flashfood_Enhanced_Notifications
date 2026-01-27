@@ -126,10 +126,10 @@ def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool
 
     return True
 
-def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items: dict, telegram_token: str) -> list[str]:
+def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items: dict, telegram_token: str) -> dict:
   # returns list of newly seen item IDs.
     
-    new_item_ids = []
+    new_items = {}
     notifications = []  # List of (item, store, reasons)
     chat_id = user.get("telegram_chat_id")
 
@@ -156,8 +156,8 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
                 if not item_passes_expiry_filter(item, expiry_filter):
                     continue
 
-                # This is a new item that passes filters
-                new_item_ids.append(item_id)
+                # This is a new item that passes and needs a removal date generated
+                new_items.setdefault(item_id, get_item_removal_date(item))
 
                 #This will duplicate notifications if there's overlap between favourite
                 #stores and deal alert stores
@@ -182,7 +182,7 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
                 if not item_id or item_id in seen_items.get("items", {}):
                     continue
 
-                #reason we're making this a notification in case multiple
+                # reason we're making this a notification in case multiple exist
                 # necessary?    
                 reasons = []
 
@@ -208,14 +208,22 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
                 if not reasons:
                     continue
 
-                new_item_ids.append(item_id)
+                new_items.setdefault(item_id, get_item_removal_date(item))
                 #now I need to check for duplicates and add reasons together
                 #made the notification
                 for item, store, reasons in notifications:
                     message = format_create_notification(item, store, reasons)
                     send_telegram_message(telegram_token, chat_id, message)
     #making this a set removes duplicates.
-    return list(set(new_item_ids))
+    return list(set(new_items))
+
+def get_item_removal_date(item:dict) -> datetime:
+    # defaults to a week from now
+    expiry_date = datetime.now() - timedelta(days=7)
+    best_before_on_item = item.get("bestBeforeDate")
+    if best_before_on_item:
+        expiry_date = datetime.fromtimestamp(best_before_on_item)
+    return expiry_date
 
 
 def send_telegram_message(token: str, chat_id: str, message: str) -> bool:
@@ -331,37 +339,22 @@ def main():
             if store_id and store_id in user_store_ids:
                 user_stores[store_id] = store
     # Process each user
-    all_new_items = []
+    all_new_items = {}
     for user in config.get("users", []):
-        new_items = discover_new_user_notifications(user, user_stores, seen_items, telegram_token)
+        new_items = handle_new_user_notifications(user, user_stores, seen_items, telegram_token)
         all_new_items.extend(new_items)
 
-    # Update seen items - if I go with new approach I would change this to 
-    # its expiry date
-    for item_id in all_new_items:
-        seen_items.setdefault("items", {})[item_id] = datetime.now().isoformat()
+    for item_id, expiry in all_new_items:
+        seen_items.setdefault("items", {})[item_id] = expiry.isoformat()
 
-    # Clean up old seen items (older than 7 days)...
-    # rethinking this, some stuff is on way longer than a week
-    # what if it stored the expiration date with the item
-    # and the item is removed after that expiration date?
-    # Would mean a few items are in there for a while if
-    # they have really far out expiration dates but otherwise it would
-    # be cleared? Is that gonna be a lot of items though...
-    # Case: Item expires in a year, is not sold => don't want it removed
-    # Case: Item expires in a year, is sold => stays in list for a year (acceptable if not many)
-    # Case: 
-    # case I haven't thought of - when a price changes on an item is it
-    # creating a new item or updating the price or the original? Cause 
-    # those are valuable but will end up getting skipped if they're the same. 
 
-    # Define the cutoff date as 7 days ago from now
-    cutoff_date = datetime.now() - timedelta(days=7)
+    # find expiry date. If none, put a week from now.
+    # run check and remove any that have already expired.
+    # seen items need to have their expiry date when added.
     seen_item_pairs = seen_items.get("items", {}).items()
-    # Filter items to retain only those seen within the last 7 days
     recently_seen_items = {
-        item_id: seen_time for item_id, seen_time in seen_item_pairs
-        if datetime.fromisoformat(seen_time) > cutoff_date
+        item_id: expiry_date for item_id, expiry_date in seen_item_pairs
+        if datetime.fromisoformat(expiry_date) >= datetime.now()
     }
 
     # Update seen_items with the filtered recent items
