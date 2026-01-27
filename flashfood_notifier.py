@@ -1,4 +1,6 @@
 #polls flashfood and sends telegram bot notifications according to criteria.
+from datetime import datetime, timedelta
+from typing import Optional
 import json
 import os
 from pathlib import Path
@@ -87,6 +89,41 @@ def get_user_store_ids(user: dict) -> set[str]:
 
     return store_ids
 
+def get_next_weekday(day_name: str) -> datetime:
+    #Gets the next occurrence of a weekday (input 'saturday')
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    #idk if config checks are necessary but it's more robust
+    target_day = days.index(day_name.lower())
+    
+    # Note, does server location of GH change what 'now' means?
+    today = datetime.now()
+    current_day_int = today.weekday()
+
+    days_ahead = target_day - current_day_int
+    if days_ahead < 0:  # Target day already happened this week
+        days_ahead += 7
+
+    return today + timedelta(days=days_ahead)
+
+def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool:
+    if expiry_filter is None:
+        return True
+
+    best_before = item.get("bestBeforeDate")
+    if not best_before:
+        return True  # expiry DNE, pass on
+
+    # Convert Unix timestamp to datetime
+    expiry_date = datetime.fromtimestamp(best_before)
+
+    if "day_of_week" in expiry_filter:
+        grocery_day_date = get_next_weekday(expiry_filter["day_of_week"])
+        
+        # must expire on or after grocery day
+        return expiry_date.date() >= grocery_day_date.date()
+
+    return True
+
 def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: dict, telegram_token: str) -> list[str]:
   # returns list of newly seen item IDs.
     
@@ -97,6 +134,8 @@ def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: di
     favorite_config = user.get("favorite_stores", {})
     if favorite_config.get("enabled"):
         fav_store_ids = favorite_config.get("store_ids", [])
+        expiry_filter = favorite_config.get("expiry_filter")
+
 
         for store_id in fav_store_ids:
             store = all_stores.get(store_id)
@@ -110,7 +149,9 @@ def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: di
                 if not item_id or item_id in seen_items.get("items", {}):
                     continue
 
-                # add expiry logic check
+                # expiry logic check (expires before grocery day this week)
+                if not item_passes_expiry_filter(item, expiry_filter):
+                    continue
 
                 # This is a new item that passes filters
                 new_item_ids.append(item_id)
@@ -118,7 +159,7 @@ def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: di
                 #This will duplicate notifications if there's overlap between favourite
                 #stores and deal alert stores
                 notifications.append((item, store, ["Favorite store"]))
-
+#Now write logic for stores farther out
     
     return new_item_ids
 
