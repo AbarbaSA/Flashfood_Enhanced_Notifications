@@ -1,4 +1,5 @@
 #polls flashfood and sends telegram bot notifications according to criteria.
+import json
 import os
 
 # Keeping these as secrets in case they're sensitive
@@ -23,3 +24,7 @@ def get_flashfood_config() -> tuple[str, dict]:
     }
 
     return api_url, headers
+
+def load_config() -> dict:
+    with open("config.example.json", "r") as f:
+        return json.load(f)
