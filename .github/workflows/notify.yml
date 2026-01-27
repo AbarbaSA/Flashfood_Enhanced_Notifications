@@ -21,7 +21,16 @@ jobs:
         uses: actions/checkout@v4
         with: 'refs/heads/trunk'  # Checks out the trunk branch, can do other branch, specific commit, or even other repo (add more arguments tho). Neat.
 
-  
+      - name: Set up Python
+        # These actions guys again. So cool.
+        uses: actions/setup-python@v5
+        with:
+          #recent version
+          python-version: '3.11'
+
+
+
+
       - name: Restore seen items cache
         # Function for getting a cache
         uses: actions/cache@v4
