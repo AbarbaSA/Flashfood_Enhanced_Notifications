@@ -1,0 +1,13 @@
+name: Flashfood Notifier
+
+on:
+  schedule:
+    # Run every 10 minutes from 7am-10pm Toronto time - A polling hours length of 15 hours per day
+    # Daylight savings considerations:
+    # EST (winter): UTC-5, so 7H-22H = 12:00 (noon) UTC + 15H = 03:00(AM) UTC next day
+    # EDT (summer): UTC-5, so 7H-22H = 11:00 (AM)   UTC + 15H = 02:00(AM) UTC next day
+    # Cover both by running 11:00 UTC - 03:00 UTC next day - would like to not poll for an extra hour
+    # Am tired of fiddling with it.
+    - cron: '*/10 11-23 * * *' # Every 10 minutes, between 11:00 AM and 11:59 PM
+    - cron: '*/10 0-2 * * *' # Every 10 minutes, between 12:00 AM(midnight) and 02:59 AM 
+  workflow_dispatch:  # Allow manual trigger
