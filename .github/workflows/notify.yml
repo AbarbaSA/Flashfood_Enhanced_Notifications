@@ -19,7 +19,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with: 'refs/heads/trunk'  # Checks out the trunk branch, can do other branch, specific commit, or even other repo (add more arguments tho). Neat.
 
       - name: Set up Python
         # These actions guys again. So cool.
