@@ -90,7 +90,25 @@ def main():
     # Load seen items
     seen_items = load_seen_items()
 
-    all_nearby_stores = get_stores_by_location(api_url, headers, 45, -73)
+    for user in config.get("users", []):
+        user_name = user.get("name", "Unknown")
+        location = user.get("location", {})
+        lat = location.get("latitude")
+        lng = location.get("longitude")
+
+        # Get stores near this user's location
+        print(f"Finding stores for {user_name} near ({lat}, {lng})")
+        all_nearby_stores = get_stores_by_location(api_url, headers, lat, lng)
+
+        # Filter to just the stores this user cares about
+        current_user_store_ids=  ["5c81894b3eac11da477de31b", "5c817e773eac11da477de29c"]
+        user_stores = {}
+        for store in all_nearby_stores:
+            store_id = store.get("id")
+            if store_id and store_id in current_user_store_ids:
+                user_stores[store_id] = store
+
+        # Then figure out what notification to send
 
 
 if __name__ == "__main__":
