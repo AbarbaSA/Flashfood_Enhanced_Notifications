@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with: 'refs/heads/trunk'  # Checks out the trunk branch, can do other branch, specific commit, or even other repo (add more arguments tho). Neat.
+
   
       - name: Restore seen items cache
         # Function for getting a cache
