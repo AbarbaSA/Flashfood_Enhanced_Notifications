@@ -45,18 +45,16 @@ def load_config() -> dict:
         return json.load(f)
     
 def load_seen_items() -> dict:
-    #don't want to alert on items already sent. Probably don't
-    #want to keep adding stuff to this list forever and ever
+    # returns the dict of previously seen items
     if not SEEN_ITEMS_FILE.exists():
         return {"items": {}, "last_updated": None}
-    with open(SEEN_ITEMS_FILE, "r") as f:
-        return json.load(f)
+    with open(SEEN_ITEMS_FILE, "r") as seen_items_file:
+        return json.load(seen_items_file)
 
 def get_stores_by_location(api_url: str, headers: dict, latitude: float, longitude: float, max_distance: int = 75000) -> list[dict]:
-# gets all stores near specified location and all their items
-    
+    # gets all stores near specified location and all their items
     search_criteria = {
-        "storesWithItemsLimit": 30,
+        "storesWithItemsLimit": 50,
         "includeItems": "true",
         "searchLatitude": latitude,
         "searchLongitude": longitude,
@@ -67,6 +65,7 @@ def get_stores_by_location(api_url: str, headers: dict, latitude: float, longitu
 
     try:
         response = requests.get(api_url, headers=headers, params=search_criteria, timeout=30)
+        # raises HTTP error if bad, jumps to except block
         response.raise_for_status()
         data = response.json()
 
@@ -94,15 +93,13 @@ def get_user_store_ids(user: dict) -> set[str]:
 def get_next_weekday(day_name: str) -> datetime:
     #Gets the next occurrence of a weekday (input 'saturday')
     days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-    #idk if config checks are necessary but it's more robust
-    target_day = days.index(day_name.lower())
+    grocery_day = days.index(day_name.lower())
     
-    # Note, does server location of GH change what 'now' means?
     today = datetime.now()
     current_day_int = today.weekday()
 
-    days_ahead = target_day - current_day_int
-    if days_ahead < 0:  # Target day already happened this week
+    days_ahead = grocery_day - current_day_int
+    if days_ahead < 0:  # Grocery day already happened this week
         days_ahead += 7
 
     return today + timedelta(days=days_ahead)
@@ -128,10 +125,14 @@ def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool
 
 def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items: dict, telegram_token: str) -> dict:
   # returns list of newly seen item IDs.
-    
+    chat_id = user.get("telegram_chat_id")
+
+    if not chat_id:
+        return []
+
     new_items = {}
     notifications = []  # List of (item, store, reasons)
-    chat_id = user.get("telegram_chat_id")
+
 
     # Process favorite stores
     favorite_config = user.get("favorite_stores", {})
@@ -142,8 +143,6 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
 
         for store_id in fav_store_ids:
             store = all_stores_in_area.get(store_id)
-
-            # if they're out of range, could happen
             if not store:
                 continue
 
@@ -159,9 +158,12 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 # This is a new item that passes and needs a removal date generated
                 new_items.setdefault(item_id, get_item_removal_date(item))
 
-                #This will duplicate notifications if there's overlap between favourite
-                #stores and deal alert stores
-                notifications.append((item, store, ["Favorite store"]))
+                # Check if already in notifications (from deal alerts)
+                existing = next((notification for notification in notifications if notification[0].get("id") == item_id), None)
+                if existing:
+                    existing[2].append("Favorite store")
+                else:
+                    notifications.append((item, store, ["Favorite store"]))
 
 
     # Process deal notifications
@@ -181,17 +183,14 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 item_id = item.get("id")
                 if not item_id or item_id in seen_items.get("items", {}):
                     continue
-
-                # reason we're making this a notification in case multiple exist
-                # necessary?    
-                reasons = []
+   
+                criteria_satisfied = []
 
                 # Check if price is below great deal threshold
                 try:
-                    # default value if I can't find it in dict
                     price = float(item.get("price", 100000))
                     if price_below and price < price_below:
-                        reasons.append(f"Under ${price_below}")
+                        criteria_satisfied.append(f"Under ${price_below}")
                 except (ValueError, TypeError):
                     pass
 
@@ -203,23 +202,29 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 )
                 
                 if discount_above and discount >= discount_above:
-                    reasons.append(f"Over {discount_above}% off")
+                    criteria_satisfied.append(f"Over {discount_above}% off")
 
-                if not reasons:
+                if not criteria_satisfied:
                     continue
 
                 new_items.setdefault(item_id, get_item_removal_date(item))
+
                 #now I need to check for duplicates and add reasons together
-                #made the notification
-                for item, store, reasons in notifications:
-                    message = format_create_notification(item, store, reasons)
-                    send_telegram_message(telegram_token, chat_id, message)
-    #making this a set removes duplicates.
-    return list(set(new_items))
+                existing = next((notification for notification in notifications if notification[0].get("id") == item_id), None)
+                if existing:
+                    existing[2].extend(criteria_satisfied)
+                else:
+                    notifications.append((item, store, criteria_satisfied))
+
+    # Send all notifications after both favorite and deal processing
+    for item, store, criteria_satisfied in notifications:
+        message = format_create_notification(item, store, criteria_satisfied)
+        send_telegram_message(telegram_token, chat_id, message)
+    return new_items
 
 def get_item_removal_date(item:dict) -> datetime:
-    # defaults to a week from now
-    expiry_date = datetime.now() - timedelta(days=30)
+    # defaults to a month from now
+    expiry_date = datetime.now() + timedelta(days=30)
     best_before_on_item = item.get("bestBeforeDate")
     if best_before_on_item:
         expiry_date = datetime.fromtimestamp(best_before_on_item)
@@ -254,26 +259,22 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
     original_price = item.get("originalPrice", price)
     quantity = item.get("quantityAvailable", "?")
 
-    #maybe find address if unknown
     store_name = store.get("name", "Unknown Store")
 
     # Calculate discount
     discount_percentage = calculate_discount_percent(original_price, price)
 
-    # Format expiry date - wanna make it day of the week based
+    # Format expiry date
     best_before = item.get("bestBeforeDate")
     if best_before:
-        #strftime("Today is %A, %B %d, %y")
-        #Today is Wednesday, April 09, 25
-        # it isn't recognizing %y, will test.
         expiry = datetime.fromtimestamp(best_before).strftime("%a, %b %d, '%y")
     else:
         expiry = "N/A"
 
-    # making message, can use a little styling
-    price_string = "Price: <b>${price}</b>" 
-    + (f" (was ${original_price}, {discount_percentage:.0f}% off)" 
-    if discount_percentage > 0 else ""),
+    # Make message
+    price_string = (f"Price: <b>${price}</b>"
+        + (f" (was ${original_price}, {discount_percentage:.0f}% off)"
+        if discount_percentage > 0 else ""))
 
     lines = [
         f"<b>{name}</b>",
@@ -288,11 +289,10 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
         lines.append("")
         lines.append(f"<i>Matched: {', '.join(match_reasons)}</i>")
 
-    # Add picture if available
+    # Add picture if available — link must have text content or it
     image_url = item.get("imageUrl")
     if image_url:
-        lines.append("")
-        lines.append(f'<a href="{image_url}"></a>')
+        lines.append(f'<a href="{image_url}">&#8205;</a>')
 
     return "\n".join(lines)
     
@@ -322,15 +322,17 @@ def main():
     # Load seen items
     seen_items = load_seen_items()
 
+    # Fixed the context window bug here
+    all_new_items = {}
     for user in config.get("users", []):
         user_name = user.get("name", "Unknown")
         location = user.get("location", {})
         lat = location.get("latitude")
         lng = location.get("longitude")
 
+        # get_user_store_ids collects all store IDs this user cares about (favorites + deals)
         user_store_ids = get_user_store_ids(user)
 
-        # want to skip if nothing is configured and not send a bogus request
         if not user_store_ids:
             continue
         # Get stores near this user's location
@@ -343,19 +345,17 @@ def main():
             store_id = store.get("id")
             if store_id and store_id in user_store_ids:
                 user_stores[store_id] = store
-    # Process each user
-    all_new_items = {}
-    for user in config.get("users", []):
-        new_items = handle_new_user_notifications(user, user_stores, seen_items, telegram_token)
-        all_new_items.extend(new_items)
 
-    for item_id, expiry in all_new_items:
+        # Process this user's notifications with their own stores
+        new_items = handle_new_user_notifications(user, user_stores, seen_items, telegram_token)
+        all_new_items.update(new_items)
+
+    # Update seen items
+    for item_id, expiry in all_new_items.items():
         seen_items.setdefault("items", {})[item_id] = expiry.isoformat()
 
 
-    # find expiry date. If none, put a week from now.
-    # run check and remove any that have already expired.
-    # seen items need to have their expiry date when added.
+    # Removing seen items that have expired; older than 30 days
     seen_item_pairs = seen_items.get("items", {}).items()
     recently_seen_items = {
         item_id: expiry_date for item_id, expiry_date in seen_item_pairs
