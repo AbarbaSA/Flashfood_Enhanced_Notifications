@@ -248,7 +248,6 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
     discount_percentage = calculate_discount_percent(original_price, price)
 
     # Format expiry date - wanna make it day of the week based
-    # but if it's like a year in the future that doesn't work
     best_before = item.get("bestBeforeDate")
     if best_before:
         #strftime("Today is %A, %B %d, %y")
@@ -331,8 +330,44 @@ def main():
             store_id = store.get("id")
             if store_id and store_id in user_store_ids:
                 user_stores[store_id] = store
+    # Process each user
+    all_new_items = []
+    for user in config.get("users", []):
+        new_items = discover_new_user_notifications(user, user_stores, seen_items, telegram_token)
+        all_new_items.extend(new_items)
 
-        # Then figure out what notification to send for this specific user
+    # Update seen items - if I go with new approach I would change this to 
+    # its expiry date
+    for item_id in all_new_items:
+        seen_items.setdefault("items", {})[item_id] = datetime.now().isoformat()
+
+    # Clean up old seen items (older than 7 days)...
+    # rethinking this, some stuff is on way longer than a week
+    # what if it stored the expiration date with the item
+    # and the item is removed after that expiration date?
+    # Would mean a few items are in there for a while if
+    # they have really far out expiration dates but otherwise it would
+    # be cleared? Is that gonna be a lot of items though...
+    # Case: Item expires in a year, is not sold => don't want it removed
+    # Case: Item expires in a year, is sold => stays in list for a year (acceptable if not many)
+    # Case: 
+    # case I haven't thought of - when a price changes on an item is it
+    # creating a new item or updating the price or the original? Cause 
+    # those are valuable but will end up getting skipped if they're the same. 
+
+    # Define the cutoff date as 7 days ago from now
+    cutoff_date = datetime.now() - timedelta(days=7)
+    seen_item_pairs = seen_items.get("items", {}).items()
+    # Filter items to retain only those seen within the last 7 days
+    recently_seen_items = {
+        item_id: seen_time for item_id, seen_time in seen_item_pairs
+        if datetime.fromisoformat(seen_time) > cutoff_date
+    }
+
+    # Update seen_items with the filtered recent items
+    seen_items["items"] = recently_seen_items
+    #must rewrite seen items now to update
+
 
 
 if __name__ == "__main__":
