@@ -55,6 +55,20 @@ jobs:
           # if a file does not appear, my script has error handling for that <3
           # THEN seen_items.json should exist in the folder in the environment I have created
 
+      - name: Download config from secret
+        # This loads it into a file on the environment
+        run: echo '${{ secrets.CONFIG_JSON }}' > config.json
+
+      - name: Run notifier
+        env:
+          # all the same type of syntax to get my GH secrets
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          FLASHFOOD_API_URL: ${{ secrets.FLASHFOOD_API_URL }}
+          FLASHFOOD_API_KEY: ${{ secrets.FLASHFOOD_API_KEY }}
+          FLASHFOOD_APP_INFO: ${{ secrets.FLASHFOOD_APP_INFO }}
+          
+        run: python flashfood_notifier.py
+
       - name: Save seen items for next run
         # different function for saving
         uses: actions/cache/save@v4
