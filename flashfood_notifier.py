@@ -87,6 +87,41 @@ def get_user_store_ids(user: dict) -> set[str]:
 
     return store_ids
 
+def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: dict, telegram_token: str) -> list[str]:
+  # returns list of newly seen item IDs.
+    
+    new_item_ids = []
+    notifications = []  # List of (item, store, reasons)
+
+    # Process favorite stores
+    favorite_config = user.get("favorite_stores", {})
+    if favorite_config.get("enabled"):
+        fav_store_ids = favorite_config.get("store_ids", [])
+
+        for store_id in fav_store_ids:
+            store = all_stores.get(store_id)
+
+            # if they're out of range, could happen
+            if not store:
+                continue
+
+            for item in store.get("items", []):
+                item_id = item.get("id")
+                if not item_id or item_id in seen_items.get("items", {}):
+                    continue
+
+                # add expiry logic check
+
+                # This is a new item that passes filters
+                new_item_ids.append(item_id)
+
+                #This will duplicate notifications if there's overlap between favourite
+                #stores and deal alert stores
+                notifications.append((item, store, ["Favorite store"]))
+
+    
+    return new_item_ids
+
 def main():
     # Get telegram token from environment
     telegram_token = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -124,7 +159,7 @@ def main():
             if store_id and store_id in user_store_ids:
                 user_stores[store_id] = store
 
-        # Then figure out what notification to send
+        # Then figure out what notification to send for this specific user
 
 
 if __name__ == "__main__":
