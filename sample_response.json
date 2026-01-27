@@ -1,0 +1,26 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "addressLine1": "55555, rue Ontario Est",
+      "city": "Montr\u00e9al",
+      "id": "555555555555555555555555",
+      "location": {
+        "latitude": 60.0000005,
+        "longitude": -70.0000000099
+      },
+      "name": "Maxi Ontario",
+      "items": [
+        {
+          "bestBeforeDate": 1769904000,
+          "id": "555555555555555555555555",
+          "name": "Greek Yogurt Tzatziki Dip",
+          "originalPrice": "4.5",
+          "price": "2.25",
+          "quantityAvailable": 2,
+          "imageUrl": "https://imageurl.jpeg"
+        }
+      ]
+    }
+  ]
+}
