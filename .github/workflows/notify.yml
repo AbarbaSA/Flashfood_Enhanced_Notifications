@@ -28,7 +28,10 @@ jobs:
           #recent version
           python-version: '3.11'
 
-
+        #Python's standard library already has datetime, pathlib, json, and os. 
+        # but requests isn't so I need to install that every time
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
 
       - name: Restore seen items cache
