@@ -11,3 +11,15 @@ on:
     - cron: '*/10 11-23 * * *' # Every 10 minutes, between 11:00 AM and 11:59 PM
     - cron: '*/10 0-2 * * *' # Every 10 minutes, between 12:00 AM(midnight) and 02:59 AM 
   workflow_dispatch:  # Allow manual trigger
+jobs:
+  # Name of job
+  notify:
+  -specify OS
+  -check out code
+  - add python
+  - if there are dependencies add them
+  - get all the secrets from GH
+  - get seen items
+  -run job
+  - handle seen items because those are saved - look up storage in between jobs
+    
