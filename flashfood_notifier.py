@@ -129,6 +129,7 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
     
     new_item_ids = []
     notifications = []  # List of (item, store, reasons)
+    chat_id = user.get("telegram_chat_id")
 
     # Process favorite stores
     favorite_config = user.get("favorite_stores", {})
@@ -207,13 +208,17 @@ def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_i
 
                 new_item_ids.append(item_id)
                 #now I need to check for duplicates and add reasons together
-                #then send notification which I will do first
+                #made the notification
                 for item, store, reasons in notifications:
-                    message = format_notification(item, store, reasons)
-
+                    message = format_create_notification(item, store, reasons)
+                    send_telegram_message(telegram_token, chat_id, message)
+    #making this a set removes duplicates.
     return list(set(new_item_ids))
 
-def format_notification(item: dict, store: dict, match_reasons: list[str]) -> str:
+def send_telegram_message(token:str, chat_id:str,message:str)->bool:
+    return True
+
+def format_create_notification(item: dict, store: dict, match_reasons: list[str]) -> str:
     name = item.get("name", "Unknown Item")
     price = item.get("price", "?")
     original_price = item.get("originalPrice", price)
@@ -249,6 +254,16 @@ def format_notification(item: dict, store: dict, match_reasons: list[str]) -> st
         f"Expires: {expiry}",
         f"Store: {store_name}",
     ]
+    # Add match reasons
+    if match_reasons:
+        lines.append("")
+        lines.append(f"<i>Matched: {', '.join(match_reasons)}</i>")
+
+    # Add picture if available
+    image_url = item.get("imageUrl")
+    if image_url:
+        lines.append("")
+        lines.append(f'<a href="{image_url}"></a>')
 
     return "\n".join(lines)
     
