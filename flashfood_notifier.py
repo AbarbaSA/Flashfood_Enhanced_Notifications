@@ -124,7 +124,7 @@ def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool
 
     return True
 
-def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: dict, telegram_token: str) -> list[str]:
+def discover_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items: dict, telegram_token: str) -> list[str]:
   # returns list of newly seen item IDs.
     
     new_item_ids = []
@@ -138,7 +138,7 @@ def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: di
 
 
         for store_id in fav_store_ids:
-            store = all_stores.get(store_id)
+            store = all_stores_in_area.get(store_id)
 
             # if they're out of range, could happen
             if not store:
@@ -159,7 +159,44 @@ def discover_new_user_notifications(user: dict, all_stores: dict, seen_items: di
                 #This will duplicate notifications if there's overlap between favourite
                 #stores and deal alert stores
                 notifications.append((item, store, ["Favorite store"]))
-#Now write logic for stores farther out
+
+
+    # Process deal notifications
+    deal_config = user.get("deal_alerts", {})
+    if deal_config.get("enabled"):
+        less_convenient_store_ids = deal_config.get("store_ids", [])
+        price_below = deal_config.get("price_below")
+
+        for store_id in less_convenient_store_ids:
+            store = all_stores_in_area.get(store_id)
+            if not store:
+                continue
+
+            for item in store.get("items", []):
+                item_id = item.get("id")
+                if not item_id:
+                    continue
+
+                #reason we're making this a notification in case multiple
+                # necessary?    
+                reasons = []
+
+                # Check if price is below great deal threshold
+                try:
+                    # default value if I can't find it in dict
+                    price = float(item.get("price", 100000))
+                    if price_below and price < price_below:
+                        reasons.append(f"Under ${price_below}")
+                except (ValueError, TypeError):
+                    pass
+
+                # add % check
+                
+                if not reasons:
+                    continue
+
+                new_item_ids.append(item_id)
+
     
     return new_item_ids
 
