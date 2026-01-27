@@ -11,15 +11,40 @@ on:
     - cron: '*/10 11-23 * * *' # Every 10 minutes, between 11:00 AM and 11:59 PM
     - cron: '*/10 0-2 * * *' # Every 10 minutes, between 12:00 AM(midnight) and 02:59 AM 
   workflow_dispatch:  # Allow manual trigger
+
 jobs:
-  # Name of job
   notify:
-  -specify OS
-  -check out code
-  - add python
-  - if there are dependencies add them
-  - get all the secrets from GH
-  - get seen items
-  -run job
-  - handle seen items because those are saved - look up storage in between jobs
-    
+    runs-on: ubuntu-latest
+
+    steps:
+  
+      - name: Restore seen items cache
+        # Function for getting a cache
+        uses: actions/cache@v4
+        with:
+          #regardless of environment I spin up, this finds the parent folderpath
+          #SCRIPT_DIR = Path(__file__).parent
+          #
+          #Then, this should exist because my caching logic will have popped  by the time the script starts
+          #SEEN_ITEMS_FILE = SCRIPT_DIR / "seen_items.json"
+
+          # File path I'm trying to find
+          path: seen_items.json
+          # I'm using this key to access it
+          key: seen-items-${{ github.run_id }}
+          # BUT! If that key doesn't work, one that starts with this
+          # will be used (if it can find it.)
+          restore-keys: |
+            seen-items-
+          # if a file does not appear, my script has error handling for that <3
+          # THEN seen_items.json should exist in the folder in the environment I have created
+
+      - name: Save seen items for next run
+        # different function for saving
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          # and it already has its orders, save seen_items.json (recently updated by my script and still alive in the environment) to the cache
+          #then when the environment disappears, seen_items.json will live on. But locked and private.
+          path: seen_items.json
+          key: seen-items-${{ github.run_id }}
