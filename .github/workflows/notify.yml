@@ -61,19 +61,9 @@ jobs:
           key: seen-items-${{ github.run_id }}
 
       - name: Delete old seen items caches
-        if: always()  # Ensure this step runs regardless of the previous steps' success or failure
+        if: always()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set the GitHub token for authentication
-
-      # List caches with keys starting with 'seen-items-', retrieving their IDs and keys
-      # process the JSON output to filter out the current run's cache  
-      # Delete filtered caches by their IDs  
-      # Continue without error if the delete fails
-        run: |  
-          gh cache list --key seen-items- --json id,key | 
-          jq '.[] | 
-          select(.key != "seen-items-${{ github.run_id }}") | .id' | 
-          xargs -I {} gh cache delete {} 
-          || true  
-
-      
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh cache list --key seen-items- --json id,key --jq '.[] | select(.key != "seen-items-${{ github.run_id }}") | .id' | \
+                  xargs -I {} gh cache delete {} || true
