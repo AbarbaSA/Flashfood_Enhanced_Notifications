@@ -12,6 +12,10 @@ on:
     - cron: '*/10 0-2 * * *' # Every 10 minutes, between 12:00 AM(midnight) and 02:59 AM 
   workflow_dispatch:  # Allow manual trigger
 
+# it needs write access to delete caches
+permissions:
+  actions: write
+
 jobs:
   notify:
     runs-on: ubuntu-latest
