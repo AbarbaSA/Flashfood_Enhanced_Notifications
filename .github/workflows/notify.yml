@@ -2,14 +2,12 @@ name: Flashfood Notifier
 
 on:
   schedule:
-    # Run every 10 minutes from 7am-10pm Toronto time - A polling hours length of 15 hours per day
-    # Daylight savings considerations:
-    # EST (winter): UTC-5, so 7H-22H = 12:00 (noon) UTC + 15H = 03:00(AM) UTC next day
-    # EDT (summer): UTC-5, so 7H-22H = 11:00 (AM)   UTC + 15H = 02:00(AM) UTC next day
-    # Cover both by running 11:00 UTC - 03:00 UTC next day - would like to not poll for an extra hour
-    # Am tired of fiddling with it.
-    - cron: '*/10 11-23 * * *' # Every 10 minutes, between 11:00 AM and 11:59 PM
-    - cron: '*/10 0-2 * * *' # Every 10 minutes, between 12:00 AM(midnight) and 02:59 AM 
+    # Run every 15 minutes from 7am-8pm Toronto time (13 hours per day)
+    # EST (winter): UTC-5, so 7H-20H = 12:00 UTC to 01:00 UTC next day
+    # EDT (summer): UTC-4, so 7H-20H = 11:00 UTC to 00:00 UTC
+    # Cover both by running 11:00 UTC - 01:00 UTC next day
+    - cron: '*/20 11-23 * * *'
+    - cron: '*/20 0 * * *'
   workflow_dispatch:  # Allow manual trigger
 
 # it needs write access to delete caches
@@ -28,6 +26,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
