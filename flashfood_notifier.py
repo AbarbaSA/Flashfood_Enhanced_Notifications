@@ -274,7 +274,7 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
         expiry = "N/A"
 
     # Make message
-    price_string = (f"Price: <b>${price}</b>"
+    price_string = (f"<b>${price}</b>"
         + (f" (was ${original_price}, {discount_percentage:.0f}% off)"
         if discount_percentage > 0 else ""))
 
