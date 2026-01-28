@@ -123,7 +123,7 @@ def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool
 
     return True
 
-def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items: dict, telegram_token: str) -> dict:
+def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items_obj_dict: dict, telegram_token: str) -> dict:
   # returns list of newly seen item IDs.
     chat_id = user.get("telegram_chat_id")
 
@@ -147,8 +147,9 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 continue
 
             for item in store.get("items", []):
-                item_id = item.get("id")
-                if not item_id or item_id in seen_items.get("items", {}):
+                item_id = str(item.get("id", ""))
+                seen_item_ids = seen_items_obj_dict.get("items", {}).keys()
+                if not item_id or item_id in seen_item_ids:
                     continue
 
                 # expiry logic check (expires before grocery day this week)
@@ -180,10 +181,11 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 continue
 
             for item in store.get("items", []):
-                item_id = item.get("id")
-                if not item_id or item_id in seen_items.get("items", {}):
+                item_id = str(item.get("id", ""))
+                seen_item_ids = seen_items_obj_dict.get("items", {}).keys()
+                if not item_id or item_id in seen_item_ids:
                     continue
-   
+
                 criteria_satisfied = []
 
                 # Check if price is below great deal threshold
@@ -355,11 +357,11 @@ def main():
         seen_items.setdefault("items", {})[item_id] = expiry.isoformat()
 
 
-    # Removing seen items that have expired; older than 30 days
+    # Removing seen items that have expired
     seen_item_pairs = seen_items.get("items", {}).items()
     recently_seen_items = {
         item_id: expiry_date for item_id, expiry_date in seen_item_pairs
-        if datetime.fromisoformat(expiry_date) >= datetime.now()
+        if datetime.fromisoformat(expiry_date).date() >= datetime.now().date()
     }
 
     # Update seen_items with the filtered recent items
