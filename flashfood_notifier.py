@@ -54,7 +54,7 @@ def load_seen_items() -> dict:
 def get_stores_by_location(api_url: str, headers: dict, latitude: float, longitude: float, max_distance: int = 75000) -> list[dict]:
     # gets all stores near specified location and all their items
     search_criteria = {
-        "storesWithItemsLimit": 50,
+        "storesWithItemsLimit": 28,
         "includeItems": "true",
         "searchLatitude": latitude,
         "searchLongitude": longitude,
