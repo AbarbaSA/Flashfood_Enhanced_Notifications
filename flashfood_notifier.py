@@ -55,29 +55,6 @@ def load_seen_items() -> dict:
     with open(SEEN_ITEMS_FILE, "r") as seen_items_file:
         return json.load(seen_items_file)
 
-    # gets all stores near specified location and all their items
-    search_criteria = {
-        "storesWithItemsLimit": 50,
-        "includeItems": "true",
-        "searchLatitude": latitude,
-        "searchLongitude": longitude,
-        "userLocationLatitude": latitude,
-        "userLocationLongitude": longitude,
-        "maxDistance": max_distance
-    }
-
-    try:
-        response = requests.get(api_url, headers=headers, params=search_criteria, timeout=30)
-        # raises HTTP error if bad, jumps to except block
-        response.raise_for_status()
-        data = response.json()
-
-        if data.get("status") == "success":
-            return data.get("data", [])
-    except requests.RequestException as e:
-        print(f"Getting stores by location failed: {e}")
-
-    return []
 
 def get_store_with_items(api_url: str, headers: dict, store_id: str, store_name: str) -> Optional[dict]:
     # fetches items for a single store by ID
@@ -180,7 +157,7 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
         return []
 
     new_items = {}
-    notifications = []  # List of (item, store, reasons)
+    notifications = []  # List of (item, store, reasons, stop)
 
 
     # Process favorite stores
@@ -195,6 +172,8 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
             store = all_stores_in_area.get(store_id)
             if not store:
                 continue
+
+            stop = entry.get("stop") if isinstance(entry, dict) else None
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
@@ -214,7 +193,7 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 if existing:
                     existing[2].append("Favorite store")
                 else:
-                    notifications.append((item, store, ["Favorite store"]))
+                    notifications.append((item, store, ["Favorite store"], stop))
 
 
     # Process deal notifications
@@ -231,6 +210,8 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
             store = all_stores_in_area.get(store_id)
             if not store:
                 continue
+
+            stop = entry.get("stop") if isinstance(entry, dict) else None
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
@@ -273,11 +254,11 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 if existing:
                     existing[2].extend(criteria_satisfied)
                 else:
-                    notifications.append((item, store, criteria_satisfied))
+                    notifications.append((item, store, criteria_satisfied, stop))
 
     # Send all notifications after both favorite and deal processing
-    for item, store, criteria_satisfied in notifications:
-        message = format_create_notification(item, store, criteria_satisfied)
+    for item, store, criteria_satisfied, stop in notifications:
+        message = format_create_notification(item, store, criteria_satisfied, stop)
         send_telegram_message(telegram_token, chat_id, message)
     return new_items
 
@@ -361,7 +342,7 @@ def pin_refund_links(telegram_token: str, config: dict, seen_items: dict):
         except requests.RequestException as e:
             print(f"Error pinning refund link for {user.get('name')}: {e}")
 
-def format_create_notification(item: dict, store: dict, match_reasons: list[str]) -> str:
+def format_create_notification(item: dict, store: dict, match_reasons: list[str], stop: Optional[dict] = None) -> str:
     name = item.get("name", "Unknown Item")
     price = item.get("price", "?")
     original_price = item.get("originalPrice", price)
@@ -392,6 +373,10 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
         f"Expires: {expiry}",
         f"Store: {store_name}",
     ]
+
+    if stop and stop.get("distance_km") is not None:
+        lines.append(f"{stop['distance_km']}km from {stop['name']}")
+
     # Add match reasons
     if match_reasons:
         lines.append("")

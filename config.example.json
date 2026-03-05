@@ -11,14 +11,40 @@
       "favorite_stores": {
         "enabled": true,
         "store_ids": [
-          {"id": "store_id_here", "name": "Store Name"}
+          {
+            "id": "store_id_here",
+            "name": "Store Near Home",
+            "stop": {
+              "name": "Home",
+              "lat": 45.5644,
+              "lon": -73.5946,
+              "distance_km": 0.5
+            }
+          },
+          {
+            "id": "store_id_here",
+            "name": "Store Near Transit Stop",
+            "stop": {
+              "name": "Mont-Royal",
+              "lat": 45.5213,
+              "lon": -73.5826,
+              "distance_km": 0.4
+            }
+          },
+          {
+            "id": "store_id_here",
+            "name": "Store With No Stop"
+          }
         ],
         "expiry_filter": null
       },
       "deal_alerts": {
         "enabled": true,
         "store_ids": [
-          {"id": "store_id_here", "name": "Store Name"}
+          {
+            "id": "store_id_here",
+            "name": "Store Name"
+          }
         ],
         "price_below": 5.00,
         "discount_above_percent": 50,
@@ -36,7 +62,10 @@
       "favorite_stores": {
         "enabled": true,
         "store_ids": [
-          {"id": "store_id_here", "name": "Store Name"}
+          {
+            "id": "store_id_here",
+            "name": "Store Name"
+          }
         ],
         "expiry_filter": {
           "day_of_week": "saturday"
@@ -46,7 +75,8 @@
         "enabled": false,
         "store_ids": [],
         "price_below": null,
-        "discount_above_percent": null
+        "discount_above_percent": null,
+        "exclude_keywords": []
       }
     }
   ]
