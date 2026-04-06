@@ -1,0 +1,500 @@
+[
+  {
+    "id": "681a04c736c2d6774d41f394",
+    "name": "DashMart - Montreal",
+    "stops": [
+      {
+        "name": "Metro Square-Victoria-OACI",
+        "lat": 45.5014,
+        "lon": -73.5621,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Bonaventure",
+        "lat": 45.4982,
+        "lon": -73.567,
+        "distance_km": 1.0
+      },
+      {
+        "name": "Metro Saint-Laurent",
+        "lat": 45.5109,
+        "lon": -73.5648,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Place-des-Arts",
+        "lat": 45.508,
+        "lon": -73.5683,
+        "distance_km": 0.1
+      },
+      {
+        "name": "Metro McGill",
+        "lat": 45.5041,
+        "lon": -73.5716,
+        "distance_km": 0.4
+      },
+      {
+        "name": "Metro Peel",
+        "lat": 45.5006,
+        "lon": -73.5751,
+        "distance_km": 0.9
+      }
+    ]
+  },
+  {
+    "id": "5c8046993981fe648dd123f8",
+    "name": "Maxi & Cie Jean-Talon Ouest",
+    "stops": [
+      {
+        "name": "Metro Acadie",
+        "lat": 45.5232,
+        "lon": -73.6238,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro Parc",
+        "lat": 45.5304,
+        "lon": -73.6245,
+        "distance_km": 0.1
+      },
+      {
+        "name": "Metro De Castelnau",
+        "lat": 45.5353,
+        "lon": -73.6201,
+        "distance_km": 0.5
+      }
+    ]
+  },
+  {
+    "id": "6626886e811c62fec2e3a176",
+    "name": "Maxi & Cie Sherbrooke",
+    "stops": [
+      {
+        "name": "Metro Honoré-Beaugrand",
+        "lat": 45.5964,
+        "lon": -73.5354,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Radisson",
+        "lat": 45.5896,
+        "lon": -73.5398,
+        "distance_km": 0.4
+      }
+    ]
+  },
+  {
+    "id": "68b75d32aa7216689354c03e",
+    "name": "Maxi Hochelaga",
+    "stops": [
+      {
+        "name": "Metro Viau",
+        "lat": 45.5611,
+        "lon": -73.5473,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Pie-IX",
+        "lat": 45.5542,
+        "lon": -73.5515,
+        "distance_km": 0.6
+      }
+    ]
+  },
+  {
+    "id": "5c80473e3981fe648dd12400",
+    "name": "Maxi Lasalle Newman",
+    "stops": [
+      {
+        "name": "Metro Angrignon",
+        "lat": 45.4462,
+        "lon": -73.6037,
+        "distance_km": 0.6
+      }
+    ]
+  },
+  {
+    "id": "68b75e1caa7216689354c040",
+    "name": "Maxi MTL Bernard",
+    "stops": [
+      {
+        "name": "Metro Outremont",
+        "lat": 45.5201,
+        "lon": -73.6149,
+        "distance_km": 0.6
+      }
+    ]
+  },
+  {
+    "id": "68a38614ec3ff1a699ad7a08",
+    "name": "Maxi MTL René-Lévesque",
+    "stops": [
+      {
+        "name": "Metro Bonaventure",
+        "lat": 45.4982,
+        "lon": -73.567,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Lucien-L'Allier",
+        "lat": 45.495,
+        "lon": -73.5709,
+        "distance_km": 0.3
+      },
+      {
+        "name": "Metro Georges-Vanier",
+        "lat": 45.489,
+        "lon": -73.5764,
+        "distance_km": 0.6
+      },
+      {
+        "name": "Metro Peel",
+        "lat": 45.5006,
+        "lon": -73.5751,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Guy-Concordia",
+        "lat": 45.4954,
+        "lon": -73.5798,
+        "distance_km": 0.4
+      }
+    ]
+  },
+  {
+    "id": "68a4ccc1ec3ff1a699ad7a1c",
+    "name": "Maxi MTL Robert-Bourassa",
+    "stops": [
+      {
+        "name": "Metro Place-d'Armes",
+        "lat": 45.5038,
+        "lon": -73.5558,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Square-Victoria-OACI",
+        "lat": 45.5014,
+        "lon": -73.5621,
+        "distance_km": 0.6
+      },
+      {
+        "name": "Metro Bonaventure",
+        "lat": 45.4982,
+        "lon": -73.567,
+        "distance_km": 0.8
+      }
+    ]
+  },
+  {
+    "id": "68a4cb11ec3ff1a699ad7a1a",
+    "name": "Maxi MTL avenue du parc",
+    "stops": [
+      {
+        "name": "Metro Rosemont",
+        "lat": 45.5255,
+        "lon": -73.5922,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro Outremont",
+        "lat": 45.5201,
+        "lon": -73.6149,
+        "distance_km": 0.9
+      }
+    ]
+  },
+  {
+    "id": "69666fc2ae411a3b8245df40",
+    "name": "Maxi MTL, St-Hubert",
+    "stops": [
+      {
+        "name": "Metro Beaubien",
+        "lat": 45.5342,
+        "lon": -73.6023,
+        "distance_km": 0.13
+      }
+    ]
+  },
+  {
+    "id": "5c80438d3981fe648dd123cc",
+    "name": "Maxi Montreal Mt-Royal Ouest",
+    "stops": [
+      {
+        "name": "Metro Rosemont",
+        "lat": 45.5255,
+        "lon": -73.5922,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Laurier",
+        "lat": 45.5235,
+        "lon": -73.5866,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Mont-Royal",
+        "lat": 45.5213,
+        "lon": -73.5826,
+        "distance_km": 0.4
+      }
+    ]
+  },
+  {
+    "id": "66a8f1c555bff67ef972f056",
+    "name": "Maxi Montréal Laurendeau",
+    "stops": [
+      {
+        "name": "Metro Jolicoeur",
+        "lat": 45.4569,
+        "lon": -73.582,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Monk",
+        "lat": 45.451,
+        "lon": -73.5932,
+        "distance_km": 0.9
+      }
+    ]
+  },
+  {
+    "id": "6626876c19b4ad094bd49cf8",
+    "name": "Maxi Mtl Liège",
+    "stops": [
+      {
+        "name": "Metro Crémazie",
+        "lat": 45.541,
+        "lon": -73.6364,
+        "distance_km": 0.2
+      },
+      {
+        "name": "Metro Jarry",
+        "lat": 45.5432,
+        "lon": -73.6286,
+        "distance_km": 0.9
+      }
+    ]
+  },
+  {
+    "id": "69666e6dae411a3b8245df3e",
+    "name": "Maxi Papineau Ste-Catherine",
+    "stops": [
+      {
+        "name": "Metro Papineau",
+        "lat": 45.5237,
+        "lon": -73.5522,
+        "distance_km": 0.1
+      },
+      {
+        "name": "Metro Beaudry",
+        "lat": 45.5195,
+        "lon": -73.5572,
+        "distance_km": 0.6
+      }
+    ]
+  },
+  {
+    "id": "5c8192749b05f5fb64665eaf",
+    "name": "Maxi Place Versailles",
+    "stops": [
+      {
+        "name": "Metro Honoré-Beaugrand",
+        "lat": 45.5964,
+        "lon": -73.5354,
+        "distance_km": 0.7
+      },
+      {
+        "name": "Metro Radisson",
+        "lat": 45.5896,
+        "lon": -73.5398,
+        "distance_km": 0.3
+      }
+    ]
+  },
+  {
+    "id": "5c81885c9b05f5fb64665e60",
+    "name": "Maxi Préfontaine",
+    "stops": [
+      {
+        "name": "Metro Joliette",
+        "lat": 45.5469,
+        "lon": -73.551,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro Préfontaine",
+        "lat": 45.5417,
+        "lon": -73.5542,
+        "distance_km": 0.4
+      }
+    ]
+  },
+  {
+    "id": "66e1967723dc4f78e57827eb",
+    "name": "Maxi St-Laurent Prieur",
+    "stops": [
+      {
+        "name": "Metro Henri-Bourassa",
+        "lat": 45.5532,
+        "lon": -73.6677,
+        "distance_km": 0.4
+      }
+    ]
+  },
+  {
+    "id": "5c8186413eac11da477de2fd",
+    "name": "Maxi Verdun",
+    "stops": [
+      {
+        "name": "Metro Charlevoix",
+        "lat": 45.4782,
+        "lon": -73.5694,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro LaSalle",
+        "lat": 45.4708,
+        "lon": -73.5661,
+        "distance_km": 0.3
+      }
+    ]
+  },
+  {
+    "id": "6617f201811c62fec2e3a14a",
+    "name": "PGO St-Laurent",
+    "stops": [
+      {
+        "name": "Metro Côte-Vertu",
+        "lat": 45.5143,
+        "lon": -73.6833,
+        "distance_km": 0.2
+      }
+    ]
+  },
+  {
+    "id": "5c8041c73981fe648dd123be",
+    "name": "PLM Lefebvre Montreal Canadiens",
+    "stops": [
+      {
+        "name": "Metro Square-Victoria-OACI",
+        "lat": 45.5014,
+        "lon": -73.5621,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro Bonaventure",
+        "lat": 45.4982,
+        "lon": -73.567,
+        "distance_km": 0.3
+      },
+      {
+        "name": "Metro Lucien-L'Allier",
+        "lat": 45.495,
+        "lon": -73.5709,
+        "distance_km": 0.2
+      },
+      {
+        "name": "Metro Georges-Vanier",
+        "lat": 45.489,
+        "lon": -73.5764,
+        "distance_km": 1.0
+      },
+      {
+        "name": "Metro McGill",
+        "lat": 45.5041,
+        "lon": -73.5716,
+        "distance_km": 0.8
+      },
+      {
+        "name": "Metro Peel",
+        "lat": 45.5006,
+        "lon": -73.5751,
+        "distance_km": 0.6
+      },
+      {
+        "name": "Metro Guy-Concordia",
+        "lat": 45.4954,
+        "lon": -73.5798,
+        "distance_km": 0.7
+      }
+    ]
+  },
+  {
+    "id": "663b7ec4d9b26f988c8a1f18",
+    "name": "Provigo Bishara, Mtl, Monkland",
+    "stops": [
+      {
+        "name": "Metro Villa-Maria",
+        "lat": 45.4798,
+        "lon": -73.6198,
+        "distance_km": 0.5
+      }
+    ]
+  },
+  {
+    "id": "5c8043953981fe648dd123cd",
+    "name": "Provigo Jean-Marc Fortin",
+    "stops": [
+      {
+        "name": "Metro Joliette",
+        "lat": 45.5469,
+        "lon": -73.551,
+        "distance_km": 0.9
+      },
+      {
+        "name": "Metro Préfontaine",
+        "lat": 45.5417,
+        "lon": -73.5542,
+        "distance_km": 0.7
+      }
+    ]
+  },
+  {
+    "id": "5c8045f25b8638807e45eccf",
+    "name": "Provigo Le Marché Jean-Benoît Gauthier",
+    "stops": [
+      {
+        "name": "Metro De la Savane",
+        "lat": 45.5004,
+        "lon": -73.6616,
+        "distance_km": 0.7
+      },
+      {
+        "name": "Metro Du Collège",
+        "lat": 45.5085,
+        "lon": -73.6728,
+        "distance_km": 0.9
+      }
+    ]
+  },
+  {
+    "id": "6617f3d7d042b71195470cd6",
+    "name": "Provigo V-Chartrand, Mtl, Parc",
+    "stops": [
+      {
+        "name": "Metro Saint-Laurent",
+        "lat": 45.5109,
+        "lon": -73.5648,
+        "distance_km": 0.6
+      },
+      {
+        "name": "Metro Place-des-Arts",
+        "lat": 45.508,
+        "lon": -73.5683,
+        "distance_km": 0.3
+      },
+      {
+        "name": "Metro McGill",
+        "lat": 45.5041,
+        "lon": -73.5716,
+        "distance_km": 0.5
+      },
+      {
+        "name": "Metro Peel",
+        "lat": 45.5006,
+        "lon": -73.5751,
+        "distance_km": 1.0
+      }
+    ]
+  }
+]
