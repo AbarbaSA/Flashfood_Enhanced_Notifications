@@ -1,0 +1,187 @@
+{
+  "Henri-Bourassa": [
+    {
+      "name": "Maxi St-Laurent Prieur",
+      "id": "66e1967723dc4f78e57827eb",
+      "distance": "0.4"
+    }
+  ],
+  "Sauvé": [],
+  "Crémazie": [
+    {
+      "name": "Maxi Mtl Liège",
+      "id": "6626876c19b4ad094bd49cf8",
+      "distance": "0.2"
+    }
+  ],
+  "Jarry": [],
+  "Jean-Talon": [],
+  "Beaubien": [
+    {
+      "name": "Maxi MTL, St-Hubert",
+      "id": "69666fc2ae411a3b8245df40",
+      "distance": "0.13"
+    }
+  ],
+  "Rosemont": [],
+  "Laurier": [
+    {
+      "name": "Maxi Montreal Mt-Royal Ouest",
+      "id": "5c80438d3981fe648dd123cc",
+      "distance": "0.5"
+    }
+  ],
+  "Mont-Royal": [
+    {
+      "name": "Maxi Montreal Mt-Royal Ouest",
+      "id": "5c80438d3981fe648dd123cc",
+      "distance": "0.4"
+    }
+  ],
+  "Sherbrooke": [],
+  "Berri-UQAM": [],
+  "Champ-de-Mars": [],
+  "Place-d'Armes": [],
+  "Square-Victoria-OACI": [],
+  "Bonaventure": [
+    {
+      "name": "PLM Lefebvre Montreal Canadiens",
+      "id": "5c8041c73981fe648dd123be",
+      "distance": "0.3"
+    }
+  ],
+  "Lucien-L'Allier": [
+    {
+      "name": "PLM Lefebvre Montreal Canadiens",
+      "id": "5c8041c73981fe648dd123be",
+      "distance": "0.2"
+    },
+    {
+      "name": "Maxi MTL René-Lévesque",
+      "id": "68a38614ec3ff1a699ad7a08",
+      "distance": "0.3"
+    }
+  ],
+  "Georges-Vanier": [],
+  "Lionel-Groulx": [],
+  "Place-Saint-Henri": [],
+  "Vendôme": [],
+  "Villa-Maria": [
+    {
+      "name": "Provigo Bishara, Mtl, Monkland",
+      "id": "663b7ec4d9b26f988c8a1f18",
+      "distance": "0.5"
+    }
+  ],
+  "Snowdon": [],
+  "Côte-Sainte-Catherine": [],
+  "Plamondon": [],
+  "Namur": [],
+  "De la Savane": [],
+  "Du Collège": [],
+  "Côte-Vertu": [
+    {
+      "name": "PGO St-Laurent",
+      "id": "6617f201811c62fec2e3a14a",
+      "distance": "0.2"
+    }
+  ],
+  "Cartier": [],
+  "De la Concorde": [],
+  "Montmorency": [],
+  "Honoré-Beaugrand": [],
+  "Radisson": [
+    {
+      "name": "Maxi Place Versailles",
+      "id": "5c8192749b05f5fb64665eaf",
+      "distance": "0.3"
+    },
+    {
+      "name": "Maxi & Cie Sherbrooke",
+      "id": "6626886e811c62fec2e3a176",
+      "distance": "0.4"
+    }
+  ],
+  "Langelier": [],
+  "Cadillac": [],
+  "L'Assomption": [],
+  "Viau": [],
+  "Pie-IX": [],
+  "Joliette": [],
+  "Préfontaine": [
+    {
+      "name": "Maxi Préfontaine",
+      "id": "5c81885c9b05f5fb64665e60",
+      "distance": "0.4"
+    }
+  ],
+  "Frontenac": [],
+  "Papineau": [
+    {
+      "name": "Maxi Papineau Ste-Catherine",
+      "id": "69666e6dae411a3b8245df3e",
+      "distance": "0.1"
+    }
+  ],
+  "Beaudry": [],
+  "Saint-Laurent": [],
+  "Place-des-Arts": [
+    {
+      "name": "DashMart - Montreal",
+      "id": "681a04c736c2d6774d41f394",
+      "distance": "0.1"
+    },
+    {
+      "name": "Provigo V-Chartrand, Mtl, Parc",
+      "id": "6617f3d7d042b71195470cd6",
+      "distance": "0.3"
+    }
+  ],
+  "McGill": [
+    {
+      "name": "DashMart - Montreal",
+      "id": "681a04c736c2d6774d41f394",
+      "distance": "0.4"
+    }
+  ],
+  "Peel": [],
+  "Guy-Concordia": [
+    {
+      "name": "Maxi MTL René-Lévesque",
+      "id": "68a38614ec3ff1a699ad7a08",
+      "distance": "0.4"
+    }
+  ],
+  "Atwater": [],
+  "Charlevoix": [],
+  "De l'Église": [],
+  "LaSalle": [
+    {
+      "name": "Maxi Verdun",
+      "id": "5c8186413eac11da477de2fd",
+      "distance": "0.3"
+    }
+  ],
+  "Verdun": [],
+  "Jolicoeur": [],
+  "Monk": [],
+  "Angrignon": [],
+  "Côte-des-Neiges": [],
+  "Université-de-Montréal": [],
+  "Édouard-Montpetit": [],
+  "Outremont": [],
+  "Acadie": [],
+  "Parc": [
+    {
+      "name": "Maxi & Cie Jean-Talon Ouest",
+      "id": "5c8046993981fe648dd123f8",
+      "distance": "0.1"
+    }
+  ],
+  "De Castelnau": [],
+  "Fabre": [],
+  "D'Iberville": [],
+  "Saint-Michel": [],
+  "Jean-Drapeau": [],
+  "Longueuil–Université-de-Sherbrooke": []
+}
