@@ -173,7 +173,7 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
             if not store:
                 continue
 
-            stop = entry.get("stop") if isinstance(entry, dict) else None
+            stops = entry.get("stops") if isinstance(entry, dict) else None
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
@@ -193,7 +193,7 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 if existing:
                     existing[2].append("Favorite store")
                 else:
-                    notifications.append((item, store, ["Favorite store"], stop))
+                    notifications.append((item, store, ["Favorite store"], stops))
 
 
     # Process deal notifications
@@ -211,7 +211,7 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
             if not store:
                 continue
 
-            stop = entry.get("stop") if isinstance(entry, dict) else None
+            stops = entry.get("stops") if isinstance(entry, dict) else None
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
@@ -254,11 +254,11 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 if existing:
                     existing[2].extend(criteria_satisfied)
                 else:
-                    notifications.append((item, store, criteria_satisfied, stop))
+                    notifications.append((item, store, criteria_satisfied, stops))
 
     # Send all notifications after both favorite and deal processing
-    for item, store, criteria_satisfied, stop in notifications:
-        message = format_create_notification(item, store, criteria_satisfied, stop)
+    for item, store, criteria_satisfied, stops in notifications:
+        message = format_create_notification(item, store, criteria_satisfied, stops)
         send_telegram_message(telegram_token, chat_id, message)
     return new_items
 
@@ -342,7 +342,9 @@ def pin_refund_links(telegram_token: str, config: dict, seen_items: dict):
         except requests.RequestException as e:
             print(f"Error pinning refund link for {user.get('name')}: {e}")
 
-def format_create_notification(item: dict, store: dict, match_reasons: list[str], stop: Optional[dict] = None) -> str:
+LINE_EMOJI = {"green": "🟢", "orange": "🟠", "yellow": "🟡", "blue": "🔵"}
+
+def format_create_notification(item: dict, store: dict, match_reasons: list[str], stops: Optional[list] = None) -> str:
     name = item.get("name", "Unknown Item")
     price = item.get("price", "?")
     original_price = item.get("originalPrice", price)
@@ -374,8 +376,10 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
         f"Store: {store_name}",
     ]
 
-    if stop and stop.get("distance_km") is not None:
-        lines.append(f"{stop['distance_km']}km from {stop['name']}")
+    if stops:
+        for stop in stops:
+            line_icons = "".join(LINE_EMOJI.get(l, l) for l in stop.get("lines", []))
+            lines.append(f"{stop['distance_km']}km from {stop['name']} {line_icons}")
 
     # Add match reasons
     if match_reasons:
