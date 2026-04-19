@@ -152,51 +152,55 @@ def item_passes_expiry_filter(item: dict, expiry_filter: Optional[dict]) -> bool
 def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_items_obj_dict: dict, telegram_token: str) -> dict:
   # returns list of newly seen item IDs.
     chat_id = user.get("telegram_chat_id")
+    deals_chat_id = user.get("deals_chat_id", chat_id)
 
     if not chat_id:
         return []
 
     new_items = {}
-    notifications = []  # List of (item, store, reasons, stop)
-
+    notifications = []  # List of (item, store, reasons, stops, on_route, target_chat_id)
 
     # Process favorite stores
     favorite_config = user.get("favorite_stores", {})
+    fav_store_ids = set()
     if favorite_config.get("enabled"):
         fav_store_entries = favorite_config.get("store_ids", [])
         expiry_filter = favorite_config.get("expiry_filter")
 
+        exclude_keywords = [kw.lower() for kw in favorite_config.get("exclude_keywords", [])]
 
         for entry in fav_store_entries:
             store_id = extract_store_id(entry)
+            fav_store_ids.add(store_id)
             store = all_stores_in_area.get(store_id)
             if not store:
                 continue
 
             stops = entry.get("stops") if isinstance(entry, dict) else None
+            on_route = entry.get("on_route", False) if isinstance(entry, dict) else False
+            min_discount = entry.get("min_discount_percent") if isinstance(entry, dict) else None
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
-                seen_item_ids = seen_items_obj_dict.get("items", {}).keys()
-                if not item_id or item_id in seen_item_ids:
+                if not item_id or item_id in seen_items_obj_dict.get("items", {}).keys():
                     continue
 
-                # expiry logic check (expires before grocery day this week)
                 if not item_passes_expiry_filter(item, expiry_filter):
                     continue
 
-                # This is a new item that passes and needs a removal date generated
+                item_name_lower = item.get("name", "").lower()
+                if any(kw in item_name_lower for kw in exclude_keywords):
+                    continue
+
+                if min_discount is not None:
+                    discount = calculate_discount_percent(item.get("originalPrice", "0"), item.get("price", "0"))
+                    if discount < min_discount:
+                        continue
+
                 new_items.setdefault(item_id, get_item_removal_date(item))
+                notifications.append((item, store, ["Favorite store"], stops, on_route, chat_id))
 
-                # Check if already in notifications (from deal alerts)
-                existing = next((notification for notification in notifications if notification[0].get("id") == item_id), None)
-                if existing:
-                    existing[2].append("Favorite store")
-                else:
-                    notifications.append((item, store, ["Favorite store"], stops))
-
-
-    # Process deal notifications
+    # Process deal notifications — skip any store already covered by favourites
     deal_config = user.get("deal_alerts", {})
     if deal_config.get("enabled"):
         deal_store_entries = deal_config.get("store_ids", [])
@@ -204,29 +208,29 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
         discount_above = deal_config.get("discount_above_percent")
         exclude_keywords = [kw.lower() for kw in deal_config.get("exclude_keywords", [])]
 
-
         for entry in deal_store_entries:
             store_id = extract_store_id(entry)
+            if store_id in fav_store_ids:
+                continue
+
             store = all_stores_in_area.get(store_id)
             if not store:
                 continue
 
             stops = entry.get("stops") if isinstance(entry, dict) else None
+            on_route = entry.get("on_route", False) if isinstance(entry, dict) else False
 
             for item in store.get("items", []):
                 item_id = str(item.get("id", ""))
-                seen_item_ids = seen_items_obj_dict.get("items", {}).keys()
-                if not item_id or item_id in seen_item_ids:
+                if not item_id or item_id in seen_items_obj_dict.get("items", {}).keys():
                     continue
 
-                # Check exclude keywords
                 item_name_lower = item.get("name", "").lower()
                 if any(kw in item_name_lower for kw in exclude_keywords):
                     continue
 
                 criteria_satisfied = []
 
-                # Check if price is below great deal threshold
                 try:
                     price = float(item.get("price", 100000))
                     if price_below and price < price_below:
@@ -234,13 +238,10 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                 except (ValueError, TypeError):
                     pass
 
-                # Check discount percentage
-                 
                 discount = calculate_discount_percent(
                     item.get("originalPrice", "0"),
                     item.get("price", "0")
                 )
-                
                 if discount_above and discount >= discount_above:
                     criteria_satisfied.append(f"Over {discount_above}% off")
 
@@ -248,18 +249,13 @@ def handle_new_user_notifications(user: dict, all_stores_in_area: dict, seen_ite
                     continue
 
                 new_items.setdefault(item_id, get_item_removal_date(item))
+                notifications.append((item, store, criteria_satisfied, stops, on_route, deals_chat_id))
 
-                #now I need to check for duplicates and add reasons together
-                existing = next((notification for notification in notifications if notification[0].get("id") == item_id), None)
-                if existing:
-                    existing[2].extend(criteria_satisfied)
-                else:
-                    notifications.append((item, store, criteria_satisfied, stops))
-
-    # Send all notifications after both favorite and deal processing
-    for item, store, criteria_satisfied, stops in notifications:
-        message = format_create_notification(item, store, criteria_satisfied, stops)
-        send_telegram_message(telegram_token, chat_id, message)
+    # Send all notifications after both favorite and deal processing — off-route first
+    notifications.sort(key=lambda n: n[4])
+    for item, store, criteria_satisfied, stops, on_route, target_chat_id in notifications:
+        message = format_create_notification(item, store, criteria_satisfied, stops, on_route)
+        send_telegram_message(telegram_token, target_chat_id, message)
     return new_items
 
 def get_item_removal_date(item:dict) -> datetime:
@@ -344,7 +340,7 @@ def pin_refund_links(telegram_token: str, config: dict, seen_items: dict):
 
 LINE_EMOJI = {"green": "🟢", "orange": "🟠", "yellow": "🟡", "blue": "🔵"}
 
-def format_create_notification(item: dict, store: dict, match_reasons: list[str], stops: Optional[list] = None) -> str:
+def format_create_notification(item: dict, store: dict, match_reasons: list[str], stops: Optional[list] = None, on_route: bool = False) -> str:
     name = item.get("name", "Unknown Item")
     price = item.get("price", "?")
     original_price = item.get("originalPrice", price)
@@ -375,6 +371,9 @@ def format_create_notification(item: dict, store: dict, match_reasons: list[str]
         f"Expires: {expiry}",
         f"Store: {store_name}",
     ]
+
+    if on_route:
+        lines.append("🚇 On your route")
 
     if stops:
         for stop in stops:
