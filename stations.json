@@ -1,0 +1,342 @@
+[
+  {
+    "name": "Henri-Bourassa",
+    "lat": 45.5532,
+    "lon": -73.6677
+  },
+  {
+    "name": "Sauvé",
+    "lat": 45.5506,
+    "lon": -73.6535
+  },
+  {
+    "name": "Crémazie",
+    "lat": 45.5410,
+    "lon": -73.6364
+  },
+  {
+    "name": "Jarry",
+    "lat": 45.5432,
+    "lon": -73.6286
+  },
+  {
+    "name": "Jean-Talon",
+    "lat": 45.5367,
+    "lon": -73.6088
+  },
+  {
+    "name": "Beaubien",
+    "lat": 45.5342,
+    "lon": -73.6023
+  },
+  {
+    "name": "Rosemont",
+    "lat": 45.5255,
+    "lon": -73.5922
+  },
+  {
+    "name": "Laurier",
+    "lat": 45.5235,
+    "lon": -73.5866
+  },
+  {
+    "name": "Mont-Royal",
+    "lat": 45.5213,
+    "lon": -73.5826
+  },
+  {
+    "name": "Sherbrooke",
+    "lat": 45.5184,
+    "lon": -73.5686
+  },
+  {
+    "name": "Berri-UQAM",
+    "lat": 45.5146,
+    "lon": -73.5600
+  },
+  {
+    "name": "Champ-de-Mars",
+    "lat": 45.5061,
+    "lon": -73.5538
+  },
+  {
+    "name": "Place-dArmes",
+    "lat": 45.5038,
+    "lon": -73.5558
+  },
+  {
+    "name": "Square-Victoria-OACI",
+    "lat": 45.5014,
+    "lon": -73.5621
+  },
+  {
+    "name": "Bonaventure",
+    "lat": 45.4982,
+    "lon": -73.5670
+  },
+  {
+    "name": "Lucien-LAllier",
+    "lat": 45.4950,
+    "lon": -73.5709
+  },
+  {
+    "name": "Georges-Vanier",
+    "lat": 45.4890,
+    "lon": -73.5764
+  },
+  {
+    "name": "Lionel-Groulx",
+    "lat": 45.4828,
+    "lon": -73.5798
+  },
+  {
+    "name": "Place-Saint-Henri",
+    "lat": 45.4772,
+    "lon": -73.5866
+  },
+  {
+    "name": "Vendôme",
+    "lat": 45.4739,
+    "lon": -73.6038
+  },
+  {
+    "name": "Villa-Maria",
+    "lat": 45.4798,
+    "lon": -73.6198
+  },
+  {
+    "name": "Snowdon",
+    "lat": 45.4857,
+    "lon": -73.6284
+  },
+  {
+    "name": "Côte-Sainte-Catherine",
+    "lat": 45.4924,
+    "lon": -73.6329
+  },
+  {
+    "name": "Plamondon",
+    "lat": 45.4944,
+    "lon": -73.6379
+  },
+  {
+    "name": "Namur",
+    "lat": 45.4949,
+    "lon": -73.6529
+  },
+  {
+    "name": "De la Savane",
+    "lat": 45.5004,
+    "lon": -73.6616
+  },
+  {
+    "name": "Du Collège",
+    "lat": 45.5085,
+    "lon": -73.6728
+  },
+  {
+    "name": "Côte-Vertu",
+    "lat": 45.5143,
+    "lon": -73.6833
+  },
+  {
+    "name": "Cartier",
+    "lat": 45.5602,
+    "lon": -73.6818
+  },
+  {
+    "name": "De la Concorde",
+    "lat": 45.5609,
+    "lon": -73.7097
+  },
+  {
+    "name": "Montmorency",
+    "lat": 45.5584,
+    "lon": -73.7215
+  },
+  {
+    "name": "Honoré-Beaugrand",
+    "lat": 45.5964,
+    "lon": -73.5354
+  },
+  {
+    "name": "Radisson",
+    "lat": 45.5896,
+    "lon": -73.5398
+  },
+  {
+    "name": "Langelier",
+    "lat": 45.5827,
+    "lon": -73.5432
+  },
+  {
+    "name": "Cadillac",
+    "lat": 45.5768,
+    "lon": -73.5467
+  },
+  {
+    "name": "LAssomption",
+    "lat": 45.5694,
+    "lon": -73.5467
+  },
+  {
+    "name": "Viau",
+    "lat": 45.5611,
+    "lon": -73.5473
+  },
+  {
+    "name": "Pie-IX",
+    "lat": 45.5542,
+    "lon": -73.5515
+  },
+  {
+    "name": "Joliette",
+    "lat": 45.5469,
+    "lon": -73.5510
+  },
+  {
+    "name": "Préfontaine",
+    "lat": 45.5417,
+    "lon": -73.5542
+  },
+  {
+    "name": "Frontenac",
+    "lat": 45.5332,
+    "lon": -73.5522
+  },
+  {
+    "name": "Papineau",
+    "lat": 45.5237,
+    "lon": -73.5522
+  },
+  {
+    "name": "Beaudry",
+    "lat": 45.5195,
+    "lon": -73.5572
+  },
+  {
+    "name": "Saint-Laurent",
+    "lat": 45.5109,
+    "lon": -73.5648
+  },
+  {
+    "name": "Place-des-Arts",
+    "lat": 45.5080,
+    "lon": -73.5683
+  },
+  {
+    "name": "McGill",
+    "lat": 45.5041,
+    "lon": -73.5716
+  },
+  {
+    "name": "Peel",
+    "lat": 45.5006,
+    "lon": -73.5751
+  },
+  {
+    "name": "Guy-Concordia",
+    "lat": 45.4954,
+    "lon": -73.5798
+  },
+  {
+    "name": "Atwater",
+    "lat": 45.4897,
+    "lon": -73.5863
+  },
+  {
+    "name": "Charlevoix",
+    "lat": 45.4782,
+    "lon": -73.5694
+  },
+  {
+    "name": "De lÉglise",
+    "lat": 45.4628,
+    "lon": -73.5670
+  },
+  {
+    "name": "LaSalle",
+    "lat": 45.4708,
+    "lon": -73.5661
+  },
+  {
+    "name": "Verdun",
+    "lat": 45.4593,
+    "lon": -73.5720
+  },
+  {
+    "name": "Jolicoeur",
+    "lat": 45.4569,
+    "lon": -73.5820
+  },
+  {
+    "name": "Monk",
+    "lat": 45.4510,
+    "lon": -73.5932
+  },
+  {
+    "name": "Angrignon",
+    "lat": 45.4462,
+    "lon": -73.6037
+  },
+  {
+    "name": "Côte-des-Neiges",
+    "lat": 45.4967,
+    "lon": -73.6235
+  },
+  {
+    "name": "Université-de-Montréal",
+    "lat": 45.5034,
+    "lon": -73.6176
+  },
+  {
+    "name": "Édouard-Montpetit",
+    "lat": 45.5101,
+    "lon": -73.6125
+  },
+  {
+    "name": "Outremont",
+    "lat": 45.5201,
+    "lon": -73.6149
+  },
+  {
+    "name": "Acadie",
+    "lat": 45.5232,
+    "lon": -73.6238
+  },
+  {
+    "name": "Parc",
+    "lat": 45.5304,
+    "lon": -73.6245
+  },
+  {
+    "name": "De Castelnau",
+    "lat": 45.5353,
+    "lon": -73.6201
+  },
+  {
+    "name": "Fabre",
+    "lat": 45.5468,
+    "lon": -73.6078
+  },
+  {
+    "name": "DIberville",
+    "lat": 45.5526,
+    "lon": -73.6027
+  },
+  {
+    "name": "Saint-Michel",
+    "lat": 45.5597,
+    "lon": -73.5999
+  },
+  {
+    "name": "Jean-Drapeau",
+    "lat": 45.5124,
+    "lon": -73.5331
+  },
+  {
+    "name": "Longueuil–Université-de-Sherbrooke",
+    "lat": 45.5249,
+    "lon": -73.5219
+  }
+]
